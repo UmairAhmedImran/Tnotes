@@ -1,11 +1,11 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -16,8 +16,23 @@ var initCmd = &cobra.Command{
 	Short: "initialize the notes",
 	Long: `init is used to initialize the notes in the project or it
 can be initialized globally.`,
-  Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("init called")
+
+		dir, err := os.Getwd()
+
+		if err != nil {
+			fmt.Println("Error getting current Directory:", err)
+			return
+		}
+
+		notesDir := ".notes"
+		if _, err := os.Stat(notesDir); os.IsNotExist(err) {
+			os.Mkdir(notesDir, os.ModePerm)
+			fmt.Println("Notes Directory created at:", dir)
+		} else {
+			fmt.Println("Notes Directory already exists.")
+		}
 	},
 }
 
