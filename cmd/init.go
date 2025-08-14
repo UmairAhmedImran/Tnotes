@@ -6,7 +6,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+  "time"
 
+  "github.com/boltdb/bolt"
 	"github.com/spf13/cobra"
 )
 
@@ -33,6 +35,18 @@ can be initialized globally.`,
 		} else {
 			fmt.Println("Notes Directory already exists.")
 		}
+
+    db, err := bolt.Open(notes + "/notes.db", 0600, &bolt.Options(Timeout: 1 * time.Second))
+
+    if err != nil {
+      log.Fatal(err)
+    }
+
+    defer db.Close()
+
+    // creating a read write transactions 
+
+
 	},
 }
 
