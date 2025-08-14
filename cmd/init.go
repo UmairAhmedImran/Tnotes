@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 	"os"
-  "time"
+  "log"
 
   "github.com/boltdb/bolt"
 	"github.com/spf13/cobra"
@@ -36,8 +36,8 @@ can be initialized globally.`,
 			fmt.Println("Notes Directory already exists.")
 		}
 
-    db, err := bolt.Open(notes + "/notes.db", 0600, &bolt.Options(Timeout: 1 * time.Second))
-
+    db, err := bolt.Open(notesDir + "/notes.db", 0600, nil) 
+    // &bolt.Options(Timeout: 1 * time.Second)
     if err != nil {
       log.Fatal(err)
     }
@@ -45,10 +45,26 @@ can be initialized globally.`,
     defer db.Close()
 
     // creating a read write transactions 
+    
+    db.Update(func(tx *bolt.Tx) error {
+      
+    bucket, err := tx.CreateBucketIfNotExists([]byte("MyNotes"))
 
+    if err != nil {
+      return fmt.Errorf("Create bucket: %s", err)
+    }
 
-	},
+    bucket.Put([]byte("answer"), []byte("42"))
+
+    if err != nil {
+      return fmt.Errorf("error putting data into the bucket: %s", err)
+    }
+    return nil 
+    })
+},
 }
+
+
 
 func init() {
 	rootCmd.AddCommand(initCmd)
