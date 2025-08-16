@@ -5,10 +5,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-  "os"
-
-  "github.com/boltdb/bolt"
+  "UmairAhmedImran/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -19,22 +16,7 @@ var addCmd = &cobra.Command{
 	Long: `Add new notes according to your need such as 
 you can add notes in the current project/directory or you can add golbally`,
   Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("add called")
-
-		notesDir := ".notes"
-    
-    if _, err := os.Stat(notesDir); os.IsNotExist(err) {
-      fmt.Printf("Initialize the notes first before adding: %s", err)
-    }
-
-    //configPath := ".notes/config.json"
-    
-    _, err := bolt.Open(notesDir, 0600, nil)
-    
-    if err != nil {
-      fmt.Printf("Error opening the db")
-    }
-
+    utils.CheckInit()
 	},
 }
 
