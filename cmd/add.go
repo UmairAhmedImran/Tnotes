@@ -1,11 +1,11 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
-  "UmairAhmedImran/internal/utils"
+	"UmairAhmedImran/internal/utils"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,8 +15,10 @@ var addCmd = &cobra.Command{
 	Short: "Add new notes",
 	Long: `Add new notes according to your need such as 
 you can add notes in the current project/directory or you can add golbally`,
-  Run: func(cmd *cobra.Command, args []string) {
-    utils.CheckInit()
+	Run: func(cmd *cobra.Command, args []string) {
+		var title, content string
+		utils.CheckInit()
+		utils.AddCommand()
 	},
 }
 
@@ -27,8 +29,8 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// addCmd.PersistentFlags().String("foo", "", "A help for foo")
-
+	addCmd.Flags().StringVarP(&title, "title", "t", "", "Note title")
+	addCmd.Flags().StringVarP(&content, "content", "c", "", "Note content")
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
