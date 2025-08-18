@@ -6,8 +6,11 @@ import (
 	"log"
 	"os"
 	"time"
+  "encoding/gob"
+  "bytes"
 
 	"github.com/boltdb/bolt"
+  "github.com/google/uuid"
 )
 
 type settingsStruct struct {
@@ -31,11 +34,27 @@ type basicConfStruct struct {
 	Settings      settingsStruct `json:"settings"`
 }
 
+type notesStruct struct {
+  Id            string        `json:"id"`
+  CreatedAt     time.Time     `json:"created_at"`
+  Content       string        `json:"content"`
+  Format        string        `json:"format"`
+}
+
+type BoltDbStruct struct {
+  Title         string          `json:"title"`
+  CreatedAt     time.Time       `json:"created_at"`
+  //tags          tagsStruct      `json:"tags"`  tags can be added later
+  Notes         notesStruct     `json:"notes"`
+}
+
 var (
 	notesDir   string = ".notes"
 	configFile string = ".notes/config.json"
 	dbFile     string = ".notes/notes.db"
 	bucketName string = "tnotes"
+  content    string
+  title      string
 
 	settings settingsStruct = settingsStruct{
 		Encryprtion: false,
@@ -56,6 +75,21 @@ var (
 		Markdown:      markdown,
 		Settings:      settings,
 	}
+  notes notesStruct = notesStruct{
+    Id:             uuid.NewString(),
+    CreatedAt:      time.Now(),
+    Content:        content,
+    Format:         "markdown",
+  }
+
+  boltStruct BoltDbStruct = BoltDbStruct{
+    Title:          title,
+    CreatedAt:      time.Now(),
+    Notes:          notes,
+  }
+  //buffer bytes.Buffer      Need more working here???
+  //encoding = gob.NewEncoder(&buffer)
+  //err = encoding.Encode(notes)
 )
 
 func createConfigFile() error {
@@ -136,7 +170,7 @@ func CheckInit() error {
 		fmt.Println("Config file is present moving forward")
 	}
 
-	if _, err := os.Stat(DBFile); os.IsNotExist(err) {
+	if _, err := os.Stat(dbFile); os.IsNotExist(err) {
 		fmt.Println("DB file does not exists creating new DB file")
 		// going to add two options here to re init or to create a new db?
 		createDbFile()
@@ -147,23 +181,28 @@ func CheckInit() error {
 	return nil
 }
 
-func AddCommand(title, content string) error {
-
+func AddCommand(title string, content BoltDbStruct) error {
+  
+  fmt.Printf("title: %s, content: %s\n", title, content)
 	db, err := bolt.Open(dbFile, 0600, nil)
-
+  fmt.Println("opening the DB")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	return db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket(bucketName)
+		b := tx.Bucket([]byte(bucketName))
 
 		if b == nil {
 			// ask user to create a new bucket or go for health check or init again?
 			return fmt.Errorf("bucket %s does not exists", bucketName)
 		}
-
-		return b.Put([]byte(key), []byte(value))
+    fmt.Println("Putting in the DB")
+    if err:= b.Put([]byte(title), []byte(content)); err != nil {
+      return err
+    }
+    return nil 
 	})
+
 }
