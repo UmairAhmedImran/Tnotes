@@ -6,11 +6,9 @@ import (
 	"log"
 	"os"
 	"time"
-  "encoding/gob"
-  "bytes"
 
 	"github.com/boltdb/bolt"
-  "github.com/google/uuid"
+	"github.com/google/uuid"
 )
 
 type settingsStruct struct {
@@ -35,17 +33,17 @@ type basicConfStruct struct {
 }
 
 type notesStruct struct {
-  Id            string        `json:"id"`
-  CreatedAt     time.Time     `json:"created_at"`
-  Content       string        `json:"content"`
-  Format        string        `json:"format"`
+	Id        string    `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	Content   string    `json:"content"`
+	Format    string    `json:"format"`
 }
 
 type BoltDbStruct struct {
-  Title         string          `json:"title"`
-  CreatedAt     time.Time       `json:"created_at"`
-  //tags          tagsStruct      `json:"tags"`  tags can be added later
-  Notes         notesStruct     `json:"notes"`
+	Title     string    `json:"title"`
+	CreatedAt time.Time `json:"created_at"`
+	//tags          tagsStruct      `json:"tags"`  tags can be added later
+	Notes notesStruct `json:"notes"`
 }
 
 var (
@@ -53,8 +51,8 @@ var (
 	configFile string = ".notes/config.json"
 	dbFile     string = ".notes/notes.db"
 	bucketName string = "tnotes"
-  content    string
-  title      string
+	content    string
+	title      string
 
 	settings settingsStruct = settingsStruct{
 		Encryprtion: false,
@@ -75,21 +73,18 @@ var (
 		Markdown:      markdown,
 		Settings:      settings,
 	}
-  notes notesStruct = notesStruct{
-    Id:             uuid.NewString(),
-    CreatedAt:      time.Now(),
-    Content:        content,
-    Format:         "markdown",
-  }
+	notes notesStruct = notesStruct{
+		Id:        uuid.NewString(),
+		CreatedAt: time.Now(),
+		Content:   content,
+		Format:    "markdown",
+	}
 
-  boltStruct BoltDbStruct = BoltDbStruct{
-    Title:          title,
-    CreatedAt:      time.Now(),
-    Notes:          notes,
-  }
-  //buffer bytes.Buffer      Need more working here???
-  //encoding = gob.NewEncoder(&buffer)
-  //err = encoding.Encode(notes)
+	BoltStruct BoltDbStruct = BoltDbStruct{
+		Title:     title,
+		CreatedAt: time.Now(),
+		Notes:     notes,
+	}
 )
 
 func createConfigFile() error {
@@ -182,10 +177,10 @@ func CheckInit() error {
 }
 
 func AddCommand(title string, content BoltDbStruct) error {
-  
-  fmt.Printf("title: %s, content: %s\n", title, content)
+
+	fmt.Printf("title: %s, content: %s\n", title, content)
 	db, err := bolt.Open(dbFile, 0600, nil)
-  fmt.Println("opening the DB")
+	fmt.Println("opening the DB")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -198,11 +193,15 @@ func AddCommand(title string, content BoltDbStruct) error {
 			// ask user to create a new bucket or go for health check or init again?
 			return fmt.Errorf("bucket %s does not exists", bucketName)
 		}
-    fmt.Println("Putting in the DB")
-    if err:= b.Put([]byte(title), []byte(content)); err != nil {
-      return err
-    }
-    return nil 
+		fmt.Println("Putting in the DB")
+		bytesData, err := json.Marshal(content)
+		if err != nil {
+			return err
+		}
+		if err := b.Put([]byte(title), bytesData); err != nil {
+			return err
+		}
+		return nil
 	})
 
 }

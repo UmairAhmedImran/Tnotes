@@ -4,14 +4,14 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-  "UmairAhmedImran/internal/utils"
+	"UmairAhmedImran/internal/utils"
 
 	"github.com/spf13/cobra"
 )
 
 var (
-  title   string
-  content string
+	title   string
+	content utils.BoltDbStruct
 )
 
 // addCmd represents the add command
@@ -23,15 +23,15 @@ you can add notes in the current project/directory or you can add golbally`,
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.CheckInit()
 		utils.AddCommand(title, content)
-  },
+	},
 }
 
 func init() {
-	
-  rootCmd.AddCommand(addCmd)
-  
-  addCmd.Flags().StringVarP(&title, "title", "t", "", "Note title")
-	addCmd.Flags().StringVarP(&content, "content", "c", "", "Note content")
+
+	rootCmd.AddCommand(addCmd)
+
+	addCmd.Flags().StringVarP(&title, "title", "t", "", "Note title")
+	addCmd.Flags().StringVarP(&content.Notes.Content, "content", "c", "", "Note content")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
