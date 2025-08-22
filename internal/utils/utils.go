@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"github.com/google/uuid"
 )
 
 type settingsStruct struct {
@@ -32,7 +31,7 @@ type basicConfStruct struct {
 	Settings      settingsStruct `json:"settings"`
 }
 
-type notesStruct struct {
+type NotesStruct struct {
 	Id        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	Content   string    `json:"content"`
@@ -43,7 +42,7 @@ type BoltDbStruct struct {
 	Title     string    `json:"title"`
 	CreatedAt time.Time `json:"created_at"`
 	//tags          tagsStruct      `json:"tags"`  tags can be added later
-	Notes notesStruct `json:"notes"`
+	Notes NotesStruct `json:"notes"`
 }
 
 var (
@@ -51,8 +50,8 @@ var (
 	configFile string = ".notes/config.json"
 	dbFile     string = ".notes/notes.db"
 	bucketName string = "tnotes"
-	content    string
-	title      string
+	//content    string
+	//title      string
 
 	settings settingsStruct = settingsStruct{
 		Encryprtion: false,
@@ -72,18 +71,6 @@ var (
 		DefaultBucket: "tnotes",
 		Markdown:      markdown,
 		Settings:      settings,
-	}
-	notes notesStruct = notesStruct{
-		Id:        uuid.NewString(),
-		CreatedAt: time.Now(),
-		Content:   content,
-		Format:    "markdown",
-	}
-
-	BoltStruct BoltDbStruct = BoltDbStruct{
-		Title:     title,
-		CreatedAt: time.Now(),
-		Notes:     notes,
 	}
 )
 
@@ -176,9 +163,9 @@ func CheckInit() error {
 	return nil
 }
 
-func AddCommand(title string, content BoltDbStruct) error {
+func AddCommand(title string, dbData BoltDbStruct) error {
 
-	fmt.Printf("title: %s, content: %s\n", title, content)
+	dbData.Title = title
 	db, err := bolt.Open(dbFile, 0600, nil)
 	fmt.Println("opening the DB")
 	if err != nil {
@@ -194,10 +181,11 @@ func AddCommand(title string, content BoltDbStruct) error {
 			return fmt.Errorf("bucket %s does not exists", bucketName)
 		}
 		fmt.Println("Putting in the DB")
-		bytesData, err := json.Marshal(content)
+		bytesData, err := json.Marshal(dbData)
 		if err != nil {
 			return err
 		}
+		fmt.Printf("Marshal data: %s", bytesData)
 		if err := b.Put([]byte(title), bytesData); err != nil {
 			return err
 		}
