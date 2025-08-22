@@ -186,9 +186,19 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 			return err
 		}
 		fmt.Printf("Marshal data: %s", bytesData)
-		if err := b.Put([]byte(title), bytesData); err != nil {
-			return err
-		}
+
+    value := b.Get([]byte(title))
+    fmt.Println(value)
+    if value == nil {
+        
+		  if err := b.Put([]byte(title), bytesData); err != nil {
+			  return err
+		  }
+    } else {
+      newValue := append(value, bytesData...)
+      err := b.Put([]byte(title), newValue)
+      return err
+    }
 		return nil
 	})
 
