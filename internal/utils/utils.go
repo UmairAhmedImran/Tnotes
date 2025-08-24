@@ -72,6 +72,7 @@ var (
 		Markdown:      markdown,
 		Settings:      settings,
 	}
+	jsonValue BoltDbStruct = BoltDbStruct{}
 )
 
 func createConfigFile() error {
@@ -181,24 +182,36 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 			return fmt.Errorf("bucket %s does not exists", bucketName)
 		}
 		fmt.Println("Putting in the DB")
-		bytesData, err := json.Marshal(dbData)
+
+		value := b.Get([]byte(title))
+		fmt.Println(string(value))
+		err := json.Unmarshal(value, jsonValue)
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Marshal data: %s", bytesData)
+		/// maybe I have to check if jsonValue is null
+		fmt.Println(jsonValue)
 
-    value := b.Get([]byte(title))
-    fmt.Println(value)
-    if value == nil {
-        
-		  if err := b.Put([]byte(title), bytesData); err != nil {
-			  return err
-		  }
-    } else {
-      newValue := append(value, bytesData...)
-      err := b.Put([]byte(title), newValue)
-      return err
-    }
+		if value == nil {
+			bytesData, err := json.Marshal(dbData)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("Marshal data: %s", bytesData)
+
+			if err := b.Put([]byte(title), bytesData); err != nil {
+				return err
+			}
+		} else {
+			bytesnotesData, err := json.Marshal(dbData.Notes)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("Marshal data: %s", bytesnotesData)
+			appendNewNote := append(value, bytesnotesData...)
+			err = b.Put([]byte(title), appendNewNote)
+			return err
+		}
 		return nil
 	})
 
