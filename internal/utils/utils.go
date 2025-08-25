@@ -42,7 +42,7 @@ type BoltDbStruct struct {
 	Title     string    `json:"title"`
 	CreatedAt time.Time `json:"created_at"`
 	//tags          tagsStruct      `json:"tags"`  tags can be added later
-	Notes NotesStruct `json:"notes"`
+	Notes []NotesStruct `json:"notes"`
 }
 
 var (
@@ -196,20 +196,20 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 				return err
 			}
 		} else {
-      fmt.Printf("value from boltdb: %s\n", string(value))
-		  err := json.Unmarshal(value, &jsonValue)
-		  if err != nil {
-			  return err
-		}
-
-    fmt.Printf("value after unMarshal: %s\n", jsonValue)
-			bytesnotesData, err := json.Marshal(dbData.Notes)
+			fmt.Printf("value from boltdb: %s\n", string(value))
+			err := json.Unmarshal(value, &jsonValue)
 			if err != nil {
 				return err
 			}
-			fmt.Printf("Marshal data: %s", bytesnotesData)
-			appendNewNote := append(value, bytesnotesData...)
-			err = b.Put([]byte(title), appendNewNote)
+
+			jsonValue.Notes = append(jsonValue.Notes, dbData.Notes...)
+
+			fmt.Printf("value after unMarshal: %s\n", jsonValue)
+			data, err := json.Marshal(jsonValue)
+			if err != nil {
+				return err
+			}
+			err = b.Put([]byte(title), data)
 			return err
 		}
 		return nil

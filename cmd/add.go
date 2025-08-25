@@ -26,7 +26,7 @@ var (
 	BoltStruct utils.BoltDbStruct = utils.BoltDbStruct{
 		Title:     title,
 		CreatedAt: time.Now(),
-		Notes:     notes,
+		Notes:     []utils.NotesStruct{notes},
 	}
 )
 
@@ -47,7 +47,7 @@ func init() {
 	rootCmd.AddCommand(addCmd)
 
 	addCmd.Flags().StringVarP(&title, "title", "t", "", "Note title")
-	addCmd.Flags().StringVarP(&BoltStruct.Notes.Content, "content", "c", "", "Note content")
+	addCmd.Flags().StringVarP(&BoltStruct.Notes[len(BoltStruct.Notes)-1].Content, "content", "c", "", "Note content")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
