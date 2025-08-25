@@ -184,13 +184,6 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 		fmt.Println("Putting in the DB")
 
 		value := b.Get([]byte(title))
-		fmt.Println(string(value))
-		err := json.Unmarshal(value, jsonValue)
-		if err != nil {
-			return err
-		}
-		/// maybe I have to check if jsonValue is null
-		fmt.Println(jsonValue)
 
 		if value == nil {
 			bytesData, err := json.Marshal(dbData)
@@ -203,6 +196,13 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 				return err
 			}
 		} else {
+      fmt.Printf("value from boltdb: %s\n", string(value))
+		  err := json.Unmarshal(value, &jsonValue)
+		  if err != nil {
+			  return err
+		}
+
+    fmt.Printf("value after unMarshal: %s\n", jsonValue)
 			bytesnotesData, err := json.Marshal(dbData.Notes)
 			if err != nil {
 				return err
