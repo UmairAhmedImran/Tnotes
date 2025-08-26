@@ -216,3 +216,45 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 	})
 
 }
+
+func ViewCommand(title ...string) error {
+
+	if len(title) == 0 {
+		db, err := bolt.Open(dbFile, 0600, nil)
+		if err != nil {
+			return err
+		}
+		defer db.Close()
+
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(bucketName))
+			c := b.Cursor()
+
+			for k, v := c.First(); k != nil; k, v = c.Next() {
+				fmt.Printf("key=%s, value=%s\n", k, v)
+			}
+			return nil
+		})
+
+	} else if len(title) == 1 {
+
+		db, err := bolt.Open(dbFile, 0600, nil)
+		if err != nil {
+			return err
+		}
+		defer db.Close()
+
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(bucketName))
+			value := b.Get([]byte(title[len(title)]))
+			if value == nil {
+				fmt.Println("There is no such title")
+			}
+			fmt.Println(string(value))
+			return nil
+		})
+	} else {
+		fmt.Println("Error too many arguments")
+	}
+	return nil
+}

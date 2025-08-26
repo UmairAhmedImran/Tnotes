@@ -1,14 +1,17 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
 
+	"UmairAhmedImran/internal/utils"
+
 	"github.com/spf13/cobra"
 )
+
+var notesTitle string
 
 // viewCmd represents the view command
 var viewCmd = &cobra.Command{
@@ -16,14 +19,16 @@ var viewCmd = &cobra.Command{
 	Short: "View the notes",
 	Long: `View the notes on the current project/directory or view
 them globally in the termnal.`,
-  Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("view called")
+		utils.ViewCommand(notesTitle)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(viewCmd)
 
+	addCmd.Flags().StringVarP(&notesTitle, "NotesTitle", "k", "", "Note title")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
