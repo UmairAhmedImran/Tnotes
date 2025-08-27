@@ -237,7 +237,7 @@ func ViewCommand(title ...string) error {
 		})
 
 	} else if len(title) == 1 {
-
+    fmt.Println("len = 1")
 		db, err := bolt.Open(dbFile, 0600, nil)
 		if err != nil {
 			return err
@@ -246,7 +246,8 @@ func ViewCommand(title ...string) error {
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(bucketName))
-			value := b.Get([]byte(title[len(title)]))
+			value := b.Get([]byte(title[0]))
+      fmt.Println(string(value))
 			if value == nil {
 				fmt.Println("There is no such title")
 			}

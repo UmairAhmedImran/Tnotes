@@ -21,14 +21,18 @@ var viewCmd = &cobra.Command{
 them globally in the termnal.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("view called")
-		utils.ViewCommand(notesTitle)
-	},
+	  if notesTitle == "" {
+        utils.ViewCommand()
+    } else {
+        utils.ViewCommand(notesTitle)
+    }
+  },
 }
 
 func init() {
 	rootCmd.AddCommand(viewCmd)
 
-	addCmd.Flags().StringVarP(&notesTitle, "NotesTitle", "k", "", "Note title")
+	viewCmd.Flags().StringVarP(&notesTitle, "NotesTitle", "k", "", "Note title to get")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
