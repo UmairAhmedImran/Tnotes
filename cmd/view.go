@@ -5,9 +5,11 @@ package cmd
 
 import (
 	"fmt"
+  "os"
 
-	"UmairAhmedImran/internal/utils"
-
+	_ "UmairAhmedImran/internal/utils"
+  tea "github.com/charmbracelet/bubbletea"
+  "UmairAhmedImran/internal/tui"
 	"github.com/spf13/cobra"
 )
 
@@ -21,11 +23,16 @@ var viewCmd = &cobra.Command{
 them globally in the termnal.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("view called")
-	  if notesTitle == "" {
-        utils.ViewCommand()
-    } else {
-        utils.ViewCommand(notesTitle)
+	  p := tea.NewProgram(tui.Model{})
+    if _, err := p.Run(); err != nil {
+      fmt.Printf("Error running TUI: %v\n", err)
+      os.Exit(1)
     }
+    // if notesTitle == "" {
+     //   utils.ViewCommand()
+   // } else {
+     //   utils.ViewCommand(notesTitle)
+   // }
   },
 }
 
