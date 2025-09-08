@@ -9,7 +9,6 @@ import (
 
 	"UmairAhmedImran/internal/tui"
 	"UmairAhmedImran/internal/utils"
-	_ "UmairAhmedImran/internal/utils"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"

@@ -6,6 +6,11 @@ package cmd
 import (
 	"UmairAhmedImran/internal/utils"
 	"time"
+  "fmt"
+  "os"
+
+	"UmairAhmedImran/internal/tui/addmodel"
+	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
@@ -38,6 +43,22 @@ var addCmd = &cobra.Command{
 you can add notes in the current project/directory or you can add golbally`,
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.CheckInit()
+
+    titleFlag := cmd.Flags().Lookup("title")
+    if titleFlag != nil && titleFlag.Changed {
+      fmt.Println("Title is provided by user")
+    } else {
+      contentFlag := cmd.Flags().Lookup("content")
+      if contentFlag != nil && contentFlag.Changed {
+        fmt.Println("Content is provided by user")
+      } else {
+        p := tea.NewProgram(addmodel.Model{})
+        if _, err := p.Run(); err != nil {
+          fmt.Printf("Errpr running TUI: %v\n", err)
+          os.Exit(1)
+        }
+    }
+  }
 		utils.AddCommand(title, BoltStruct)
 	},
 }
