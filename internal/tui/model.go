@@ -14,7 +14,6 @@ const (
 )
 
 type Model struct {
-	altscreen  bool
 	quitting   bool
 	current    Screen
 	subModel   tea.Model // holds whichever child model is active
@@ -22,7 +21,6 @@ type Model struct {
 
 func New() Model {
 	return Model{
-		altscreen: true,
 		current:   ScreenMain,
 	}
 }
