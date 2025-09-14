@@ -1,7 +1,9 @@
-package tui 
+package tui
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
+	_ "github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type Screen int
@@ -14,14 +16,16 @@ const (
 )
 
 type Model struct {
-	quitting   bool
-	current    Screen
-	subModel   tea.Model // holds whichever child model is active
+	quitting bool
+	current  Screen
+	subModel tea.Model // holds whichever child model is active
 }
+
+var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render
 
 func New() Model {
 	return Model{
-		current:   ScreenMain,
+		current: ScreenMain,
 	}
 }
 
@@ -56,8 +60,6 @@ func (m Model) View() string {
 	}
 	return "Welcome to T-Notes!\n[q] to quit."
 }
-
-
 
 //import (
 //	"fmt"
