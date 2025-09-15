@@ -23,6 +23,10 @@ type Model struct {
 
 var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render
 
+func (m Model) helpView() string {
+  return helpStyle("Hello")
+}
+
 func New() Model {
 	return Model{
 		current: ScreenMain,
@@ -56,7 +60,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.subModel != nil {
-		return m.subModel.View()
+		return m.subModel.View() + m.helpView()
 	}
 	return "Welcome to T-Notes!\n[q] to quit."
 }
