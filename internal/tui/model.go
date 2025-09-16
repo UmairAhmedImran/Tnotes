@@ -21,7 +21,7 @@ type Model struct {
 	subModel tea.Model // holds whichever child model is active
 }
 
-var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render
+var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("41")).Render
 
 func (m Model) helpView() string {
   return helpStyle("Hello")
@@ -62,7 +62,7 @@ func (m Model) View() string {
 	if m.subModel != nil {
 		return m.subModel.View() + m.helpView()
 	}
-	return "Welcome to T-Notes!\n[q] to quit."
+	return "Welcome to T-Notes!\n[q] to quit. " + m.helpView()
 }
 
 //import (
