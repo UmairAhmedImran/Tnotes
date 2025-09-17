@@ -8,6 +8,9 @@ import (
 
 type Screen int
 
+
+const gap = "\n\n"
+
 const (
 	ScreenMain Screen = iota
 	ScreenAdd
@@ -24,7 +27,7 @@ type Model struct {
 var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("41")).Render
 
 func (m Model) helpView() string {
-  return helpStyle("Hello")
+  return helpStyle("            Hello")
 }
 
 func New() Model {
@@ -42,10 +45,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "q":
-			m.quitting = true
+    case "esc", "ctrl+c":
 			return m, tea.Quit
-		}
+    }
 	}
 
 	// Forward updates to submodel if it exists
@@ -62,5 +64,5 @@ func (m Model) View() string {
 	if m.subModel != nil {
 		return m.subModel.View() + m.helpView()
 	}
-	return "Welcome to T-Notes!\n[q] to quit. " + m.helpView()
+	return gap + "            Welcome to T-Notes!\n" + gap + m.helpView() 
 }
