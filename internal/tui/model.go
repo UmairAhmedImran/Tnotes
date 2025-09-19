@@ -2,7 +2,7 @@ package tui
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
-	_ "github.com/charmbracelet/glamour"
+	 "github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -62,6 +62,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.subModel != nil {
+    _, err := glamour.NewTermRenderer(
+		glamour.WithAutoStyle(),
+		glamour.WithWordWrap(2),
+	)
+  if err != nil {
+    return  ""
+  }
 		return m.subModel.View() + m.helpView()
 	}
 	return gap + "            Welcome to T-Notes!\n" + gap + m.helpView() 
