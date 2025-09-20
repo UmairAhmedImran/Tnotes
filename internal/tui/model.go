@@ -1,6 +1,7 @@
 package tui
 
 import (
+  	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	 "github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
@@ -22,6 +23,7 @@ type Model struct {
 	quitting bool
 	current  Screen
 	subModel tea.Model // holds whichever child model is active
+  viewport viewport.Model
 }
 
 var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("41")).Render
@@ -31,6 +33,15 @@ func (m Model) helpView() string {
 }
 
 func New() Model {
+  const width = 78
+
+  vp := viewport.New(width, 20)
+  vp.Style = lipgloss.NewStyle().
+             BorderStyle(lipgloss.RoundedBorder()).
+             BorderForeground(lipgloss.Color("62")).
+             PaddingRight(2)
+  
+
 	return Model{
 		current: ScreenMain,
 	}
