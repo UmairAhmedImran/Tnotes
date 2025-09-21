@@ -26,7 +26,14 @@ them globally in the termnal.`,
 		fmt.Println("view called")
 		if notesTitle == "" {
 
-			p := tea.NewProgram(tui.Model{}, tea.WithAltScreen())
+			model, err := tui.BaseScreen()
+
+			if err != nil {
+				fmt.Println("Could not initialized Bubble tea model", err)
+				os.Exit(1)
+			}
+
+			p := tea.NewProgram(model) // tea.WithAltScreen()) , tui.Model
 			if _, err := p.Run(); err != nil {
 				fmt.Printf("Error running TUI: %v\n", err)
 				os.Exit(1)

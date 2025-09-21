@@ -1,14 +1,13 @@
 package tui
 
 import (
-  	"github.com/charmbracelet/bubbles/viewport"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	 "github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
 )
 
 type Screen int
-
 
 const gap = "\n\n"
 
@@ -23,25 +22,47 @@ type Model struct {
 	quitting bool
 	current  Screen
 	subModel tea.Model // holds whichever child model is active
-  viewport viewport.Model
+	viewport viewport.Model
 }
 
 var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("41")).Render
 
 func (m Model) helpView() string {
-  return helpStyle("            Hello")
+	return helpStyle("            Hello")
+}
+
+func BaseScreen() (*Model, error) {
+
+	const width = 78
+
+	vp := viewport.New(width, 20)
+	vp.Style = lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("62")).
+		PaddingRight(2)
+
+	const glamourGutter = 2
+	glamourRenderWidth := width - vp.Style.GetHorizontalFrameSize() - glamourGutter
+
+	renderer, err := glamour.NewTermRenderer(
+		glamour.WithAutoStyle(),
+		glamour.WithWordWrap(glamourRenderWidth),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+	str, err := renderer.Render("hids")
+	if err != nil {
+		return nil, err
+	}
+	vp.SetContent(str)
+	return &Model{
+		viewport: vp,
+	}, nil
 }
 
 func New() Model {
-  const width = 78
-
-  vp := viewport.New(width, 20)
-  vp.Style = lipgloss.NewStyle().
-             BorderStyle(lipgloss.RoundedBorder()).
-             BorderForeground(lipgloss.Color("62")).
-             PaddingRight(2)
-  
-
 	return Model{
 		current: ScreenMain,
 	}
@@ -56,9 +77,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch msg.String() {
-    case "esc", "ctrl+c":
+		case "esc", "ctrl+c":
 			return m, tea.Quit
-    }
+		default:
+			var cmd tea.Cmd
+			m.viewport, cmd = m.viewport.Update(msg)
+			return m, cmd
+		}
 	}
 
 	// Forward updates to submodel if it exists
@@ -73,14 +98,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.subModel != nil {
-    _, err := glamour.NewTermRenderer(
-		glamour.WithAutoStyle(),
-		glamour.WithWordWrap(2),
-	)
-  if err != nil {
-    return  ""
-  }
-		return m.subModel.View() + m.helpView()
+		return m.helpView() + m.viewport.View()
 	}
-	return gap + "            Welcome to T-Notes!\n" + gap + m.helpView() 
+	return gap + "            Welcome to T-Notes!\n" + gap + m.helpView()
 }
