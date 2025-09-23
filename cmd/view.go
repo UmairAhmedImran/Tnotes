@@ -33,7 +33,7 @@ them globally in the termnal.`,
 				os.Exit(1)
 			}
 
-			p := tea.NewProgram(model) // tea.WithAltScreen()) , tui.Model
+			p := tea.NewProgram(model, tea.WithAltScreen()) // , tui.Model
 			if _, err := p.Run(); err != nil {
 				fmt.Printf("Error running TUI: %v\n", err)
 				os.Exit(1)
