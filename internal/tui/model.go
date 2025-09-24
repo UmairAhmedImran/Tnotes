@@ -11,6 +11,8 @@ type Screen int
 
 const gap = "\n\n"
 
+var content = gap + "     Welcome to Tnotes" + gap
+
 const (
 	ScreenMain Screen = iota
 	ScreenAdd
@@ -25,11 +27,11 @@ type Model struct {
 	viewport viewport.Model
 }
 
-var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("41")).Render
+//var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("41")).Render
 
-func (m Model) helpView() string {
-	return helpStyle("            Hello")
-}
+//func helpView() string {
+//	return helpStyle("            Hello")
+//} not using at the moment
 
 func BaseScreen() (*Model, error) {
 
@@ -52,7 +54,7 @@ func BaseScreen() (*Model, error) {
 	if err != nil {
 		return nil, err
 	}
-	str, err := renderer.Render("hids")
+	str, err := renderer.Render(content)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +100,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.subModel != nil {
-		return m.helpView() + m.viewport.View()
+		return m.viewport.View()
 	}
-	return gap + "            Welcome to T-Notes!\n" + gap + m.helpView()
+	return m.viewport.View()
 }
