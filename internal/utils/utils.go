@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+  "github.com/fatih/color"
 	"github.com/boltdb/bolt"
 )
 
@@ -73,7 +74,9 @@ var (
 		Settings:      settings,
 	}
 	jsonValue BoltDbStruct = BoltDbStruct{}
+  showingWarning = color.RGB(255, 128, 0)
 )
+
 
 func createConfigFile() error {
 	conFile, err := os.Create(configFile)
@@ -116,7 +119,7 @@ func createDbFile() (*bolt.DB, error) {
 }
 
 func CallInit() error {
-	dir, err := os.Getwd()
+	_, err := os.Getwd()
 
 	if err != nil {
 		log.Fatal("Error getting current directory")
@@ -127,9 +130,8 @@ func CallInit() error {
 
 		createConfigFile()
 
-		fmt.Println("Notes Directory created at:", dir)
 	} else {
-		fmt.Println("Notes Directory already exists.")
+		showingWarning.Println("Notes Directory already exists.")
 	}
 
 	createDbFile()
