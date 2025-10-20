@@ -23,7 +23,6 @@ var viewCmd = &cobra.Command{
 	Long: `View the notes on the current project/directory or view
 them globally in the termnal.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("view called")
 		if notesTitle == "" {
 
 			model, err := tui.BaseScreen()
