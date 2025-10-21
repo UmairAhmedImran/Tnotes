@@ -75,7 +75,7 @@ var (
 	}
 	jsonValue BoltDbStruct = BoltDbStruct{}
   showingWarning = color.RGB(255, 128, 0)
-  showingError = color.RGB(255, 255, 0)
+  showingError = color.RGB(255, 0, 0)
 )
 
 
@@ -142,7 +142,7 @@ func CallInit() error {
 
 func CheckInit() error {
 	if _, err := os.Stat(notesDir); os.IsNotExist(err) {
-		fmt.Println("Tnotes not Initialized")
+		showingError.Println("Tnotes not Initialized. Please run `tnotes init` first.")
 		os.Exit(1)
 	} else {
 		fmt.Println("Notes is Initialized moving forward")
