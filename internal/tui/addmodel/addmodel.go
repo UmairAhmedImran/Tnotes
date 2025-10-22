@@ -1,6 +1,7 @@
 package addmodel
 
 import (
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -19,16 +20,20 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "enter":
-			m.done = true
-			// You might send a message back to root model to save
-			return m, tea.Quit
-		case "esc":
-			return m, tea.Quit
+		case tea.KeyMsg:
+			switch msg.String() {
+				case "enter":
+					m.done = true
+					// You might send a message back to root model to save
+					return m, tea.Quit
+				case "esc":
+					return m, tea.Quit
+				default:
+					if len(msg.String()) == 1 {
+						m.input += msg.String()
+					}
+			}
 		}
-	}
 	return m, nil
 }
 
@@ -36,5 +41,9 @@ func (m Model) View() string {
 	if m.done {
 		return "Note saved! Press any key to return.\n"
 	}
-	return "Add a note:\n(Type your note and press Enter)\n"
+	return "Add a note:\n[" + m.input + "]\n(Press Enter to save, Esc to cancel)\n"
+}
+
+func (m Model) Value() string {
+	return m.input
 }

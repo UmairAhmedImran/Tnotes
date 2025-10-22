@@ -5,11 +5,12 @@ package cmd
 
 import (
 	"UmairAhmedImran/internal/utils"
-	"time"
-  "fmt"
-  "os"
-
 	"UmairAhmedImran/internal/tui/addmodel"
+
+	"time"
+    "fmt"
+    "os"
+
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/google/uuid"
@@ -39,26 +40,45 @@ var (
 var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add new notes",
-	Long: `Add new notes according to your need such as 
+	Long: `Add new notes according to your need such as
 you can add notes in the current project/directory or you can add golbally`,
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.CheckInit()
 
-    titleFlag := cmd.Flags().Lookup("title")
-    if titleFlag != nil && titleFlag.Changed {
-      fmt.Println("Title is provided by user")
-    } else {
-      contentFlag := cmd.Flags().Lookup("content")
-      if contentFlag != nil && contentFlag.Changed {
-        fmt.Println("Content is provided by user")
-      } else {
-        p := tea.NewProgram(addmodel.Model{})
-        if _, err := p.Run(); err != nil {
-          fmt.Printf("Errpr running TUI: %v\n", err)
-          os.Exit(1)
-        }
-    }
-  }
+		titleProvided := false
+		contentProvided := false
+
+    	titleFlag := cmd.Flags().Lookup("title")
+
+		if titleFlag != nil && titleFlag.Changed {
+      		fmt.Println("Title is provided by user")
+			titleProvided = true
+    	}
+
+		contentFlag := cmd.Flags().Lookup("content")
+
+		if contentFlag != nil && contentFlag.Changed {
+			fmt.Println("Content is provided by user")
+			contentProvided = true
+		}
+
+		if titleProvided && !contentProvided {
+			currentModel := addmodel.New()
+			p := tea.NewProgram(currentModel)
+			m, err := p.Run()
+
+			if err != nil {
+				fmt.Printf("Error running TUI: %v\n", err)
+				os.Exit(1)
+			}
+
+			if currentModel, ok := m.(addmodel.Model); ok && currentModel.Value() != "" {
+				fmt.Println("Current Model Value:", currentModel.Value())
+				BoltStruct.Notes[len(BoltStruct.Notes) - 1].Content = currentModel.Value()
+			}
+
+
+		}
 		utils.AddCommand(title, BoltStruct)
 	},
 }
@@ -67,8 +87,13 @@ func init() {
 
 	rootCmd.AddCommand(addCmd)
 
-	addCmd.Flags().StringVarP(&title, "title", "t", "", "Note title")
-	addCmd.Flags().StringVarP(&BoltStruct.Notes[len(BoltStruct.Notes)-1].Content, "content", "c", "", "Note content")
+	addCmd.Flags().StringVarP(
+		&title, "title", "t", "", "Note title",
+	)
+	addCmd.Flags().StringVarP(
+		&BoltStruct.Notes[len(BoltStruct.Notes)-1].Content,
+		"content", "c", "", "Note content",
+	)
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
