@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"UmairAhmedImran/internal/tui"
 	"UmairAhmedImran/internal/utils"
@@ -29,13 +28,11 @@ them globally in the termnal.`,
 
 			if err != nil {
 				fmt.Println("Could not initialized Bubble tea model", err)
-				os.Exit(1)
 			}
 
 			p := tea.NewProgram(model, tea.WithAltScreen()) // , tui.Model
 			if _, err := p.Run(); err != nil {
 				fmt.Printf("Error running TUI: %v\n", err)
-				os.Exit(1)
 			}
 		} else {
 			utils.ViewCommand(notesTitle)

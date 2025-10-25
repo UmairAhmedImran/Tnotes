@@ -151,27 +151,23 @@ func CallInit() error {
 
 func CheckInit() error {
 	if _, err := os.Stat(notesDir); os.IsNotExist(err) {
-		fmt.Println("Tnotes not Initialized")
-		os.Exit(1) // stops the program without gracefully meaning file can be left open
-	} else {
-		fmt.Println("Notes is Initialized moving forward")
-	}
+		showingError.Println("Tnotes not Initialized. Please run `tnotes init` first.")
+		os.Exit(1)
+	} 
+	
 
 	if _, err := os.Stat(configFile); os.IsNotExist(err) {
 		fmt.Println("Config file does not exists creating basic config file")
 		// going to add two options here to re init or to create a new config?
 		createConfigFile()
-	} else {
-		fmt.Println("Config file is present moving forward")
-	}
+	} 
+
 
 	if _, err := os.Stat(dbFile); os.IsNotExist(err) {
 		fmt.Println("DB file does not exists creating new DB file")
 		// going to add two options here to re init or to create a new db?
 		createDbFile()
-	} else {
-		fmt.Println("DB file is present moving forward")
-	}
+	} 
 
 	return nil
 }
@@ -233,6 +229,8 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 }
 
 func ViewCommand(title ...string) error {
+
+  CheckInit()
 
 	if len(title) == 0 {
 		db, err := bolt.Open(dbFile, 0600, nil)
