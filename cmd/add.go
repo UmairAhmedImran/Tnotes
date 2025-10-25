@@ -51,7 +51,6 @@ you can add notes in the current project/directory or you can add golbally`,
     	titleFlag := cmd.Flags().Lookup("title")
 
 		if titleFlag != nil && titleFlag.Changed {
-      		fmt.Println("Title is provided by user")
 			titleProvided = true
     	}
 
