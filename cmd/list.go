@@ -1,28 +1,34 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"UmairAhmedImran/internal/utils"
 )
 
+var recursively bool
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List the notes",
 	Long: `List the notes in the current project/directory or list all the
 the notes globally (if specified)`,
-  Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+  	Run: func(cmd *cobra.Command, args []string) {
+		utils.CheckInit()
+
+		utils.ListCommand(recursively)
 	},
 }
 
+
 func init() {
 	rootCmd.AddCommand(listCmd)
+
+	listCmd.Flags().BoolVarP(
+		&recursively, "recursively", "r", false, "To print the content inside the title or not.",
+	)
 
 	// Here you will define your flags and configuration settings.
 

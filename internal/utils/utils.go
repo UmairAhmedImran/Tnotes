@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
-  "github.com/fatih/color"
 	"github.com/boltdb/bolt"
+	"github.com/fatih/color"
 )
 
 type settingsStruct struct {
@@ -74,8 +75,8 @@ var (
 		Settings:      settings,
 	}
 	jsonValue BoltDbStruct = BoltDbStruct{}
-  showingWarning = color.RGB(255, 128, 0)
-  showingError = color.RGB(255, 0, 0)
+    showingWarning = color.RGB(255, 128, 0)
+    showingError = color.RGB(255, 255, 0)
 )
 
 
@@ -94,18 +95,21 @@ func createConfigFile() error {
 		os.Exit(1)
 	}
 
-	fmt.Println("Creating config file")
+	fmt.Println("Created config file")
 	return nil
 }
 
 func createDbFile() (*bolt.DB, error) {
 	// create the db file
-	db, err := bolt.Open(dbFile, 0600, nil)
+	filePermission := 0600
+	db, err := bolt.Open(dbFile, os.FileMode(filePermission), nil)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	fmt.Println("Created Database File")
 
 	// creating a read write transactions
 
@@ -116,6 +120,9 @@ func createDbFile() (*bolt.DB, error) {
 		}
 		return nil
 	})
+
+	fmt.Println("DB Bucket created successfully")
+
 	return db, nil
 }
 
@@ -136,6 +143,8 @@ func CallInit() error {
 	}
 
 	createDbFile()
+
+	fmt.Println("Tnotes Initialization Complete")
 
 	return nil
 }
@@ -166,7 +175,10 @@ func CheckInit() error {
 func AddCommand(title string, dbData BoltDbStruct) error {
 
 	dbData.Title = title
-	db, err := bolt.Open(dbFile, 0600, nil)
+
+	filePermission := 0600
+	db, err := bolt.Open(dbFile, os.FileMode(filePermission), nil)
+
 	fmt.Println("opening the DB")
 	if err != nil {
 		log.Fatal(err)
@@ -257,3 +269,57 @@ func ViewCommand(title ...string) error {
 	}
 	return nil
 }
+
+func ListCommand(recursively bool) error {
+
+	db, err := bolt.Open(dbFile, os.FileMode(0600), nil)
+
+	if err != nil {
+		fmt.Println("Error opening the DB File")
+	}
+
+	defer db.Close()
+
+	db.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(bucketName))
+		cursor := bucket.Cursor()
+		fmt.Println()
+		for key, value := cursor.First(); key != nil; key, value = cursor.Next() {
+			fmt.Printf("Title: %s\n", key)
+
+			if recursively {
+				var curRecord BoltDbStruct
+				err := json.Unmarshal(value, &curRecord)
+
+				if err != nil {
+					fmt.Println("Error loading data from db")
+				}
+
+				for noteIndex := 0; noteIndex < len(curRecord.Notes); noteIndex += 1 {
+
+					currentNote := curRecord.Notes[noteIndex]
+					noteFirstLine := currentNote.Content
+					formattedID := currentNote.Id[:8]
+					maxPreviewLength := 40
+
+					if len(noteFirstLine) > maxPreviewLength {
+						noteFirstLine = noteFirstLine[:maxPreviewLength]
+						noteFirstLine = strings.Join([]string{noteFirstLine, "..."}, "")
+					}
+
+					fmt.Printf("   ↳ ID: %s | Content: %s \n", formattedID, noteFirstLine)
+				}
+
+				fmt.Println(strings.Repeat("-", 120))
+
+			}
+
+			fmt.Println()
+		}
+
+		return nil
+	})
+
+	return nil
+}
+
