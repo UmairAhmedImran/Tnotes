@@ -179,7 +179,6 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 	filePermission := 0600
 	db, err := bolt.Open(dbFile, os.FileMode(filePermission), nil)
 
-	fmt.Println("opening the DB")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -192,7 +191,6 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 			// ask user to create a new bucket or go for health check or init again?
 			return fmt.Errorf("bucket %s does not exists", bucketName)
 		}
-		fmt.Println("Putting in the DB")
 
 		value := b.Get([]byte(title))
 
@@ -207,7 +205,6 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 				return err
 			}
 		} else {
-			fmt.Printf("value from boltdb: %s\n", string(value))
 			err := json.Unmarshal(value, &jsonValue)
 			if err != nil {
 				return err
@@ -215,7 +212,6 @@ func AddCommand(title string, dbData BoltDbStruct) error {
 
 			jsonValue.Notes = append(jsonValue.Notes, dbData.Notes...)
 
-			fmt.Printf("value after unMarshal: %s\n", jsonValue)
 			data, err := json.Marshal(jsonValue)
 			if err != nil {
 				return err
