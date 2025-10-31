@@ -4,8 +4,9 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"UmairAhmedImran/internal/service"
+
 	"github.com/spf13/cobra"
-  "UmairAhmedImran/internal/utils"
 )
 
 // initCmd represents the init command
@@ -15,11 +16,9 @@ var initCmd = &cobra.Command{
 	Long: `init is used to initialize the notes in the project or it
 can be initialized globally.`,
 	Run: func(cmd *cobra.Command, args []string) {
-    utils.CallInit() 
-  },
+		service.CallInit()
+	},
 }
-
-
 
 func init() {
 	rootCmd.AddCommand(initCmd)

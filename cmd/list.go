@@ -4,24 +4,25 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"UmairAhmedImran/internal/service"
+
 	"github.com/spf13/cobra"
-	"UmairAhmedImran/internal/utils"
 )
 
 var recursively bool
+
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List the notes",
 	Long: `List the notes in the current project/directory or list all the
 the notes globally (if specified)`,
-  	Run: func(cmd *cobra.Command, args []string) {
-		utils.CheckInit()
+	Run: func(cmd *cobra.Command, args []string) {
+		service.CheckInit()
 
-		utils.ListCommand(recursively)
+		service.ListCommand(recursively)
 	},
 }
-
 
 func init() {
 	rootCmd.AddCommand(listCmd)
