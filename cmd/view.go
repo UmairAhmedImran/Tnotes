@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	"UmairAhmedImran/internal/tui"
-	"UmairAhmedImran/internal/utils"
+	"UmairAhmedImran/internal/service"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
@@ -35,7 +35,7 @@ them globally in the termnal.`,
 				fmt.Printf("Error running TUI: %v\n", err)
 			}
 		} else {
-			utils.ViewCommand(notesTitle)
+			service.ViewCommand(notesTitle)
 		}
 	},
 }

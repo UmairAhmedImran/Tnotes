@@ -4,12 +4,13 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"UmairAhmedImran/internal/model"
+	"UmairAhmedImran/internal/service"
 	"UmairAhmedImran/internal/utils"
-	"UmairAhmedImran/internal/tui/addmodel"
+	"UmairAhmedImran/internal/view"
 
+	"os"
 	"time"
-    "fmt"
-    "os"
 
 	tea "github.com/charmbracelet/bubbletea"
 
@@ -20,19 +21,18 @@ import (
 var (
 	title   string
 	content string
-	dbData  utils.BoltDbStruct
 
-	notes utils.NotesStruct = utils.NotesStruct{
+	notes model.NotesStruct = model.NotesStruct{
 		Id:        uuid.NewString(),
 		CreatedAt: time.Now(),
 		Content:   content,
 		Format:    "markdown",
 	}
 
-	BoltStruct utils.BoltDbStruct = utils.BoltDbStruct{
+	BoltStruct model.BoltDbStruct = model.BoltDbStruct{
 		Title:     title,
 		CreatedAt: time.Now(),
-		Notes:     []utils.NotesStruct{notes},
+		Notes:     []model.NotesStruct{notes},
 	}
 )
 
@@ -43,42 +43,41 @@ var addCmd = &cobra.Command{
 	Long: `Add new notes according to your need such as
 you can add notes in the current project/directory or you can add golbally`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.CheckInit()
+		service.CheckInit()
 
 		titleProvided := false
 		contentProvided := false
 
-    	titleFlag := cmd.Flags().Lookup("title")
+		titleFlag := cmd.Flags().Lookup("title")
 
 		if titleFlag != nil && titleFlag.Changed {
 			titleProvided = true
-    	}
+		}
 
 		contentFlag := cmd.Flags().Lookup("content")
 
 		if contentFlag != nil && contentFlag.Changed {
-			fmt.Println("Content is provided by user")
+			utils.ShowingInfo.Println("Content is provided by user")
 			contentProvided = true
 		}
 
 		if titleProvided && !contentProvided {
-			currentModel := addmodel.New()
+			currentModel := view.New()
 			p := tea.NewProgram(currentModel)
 			m, err := p.Run()
 
 			if err != nil {
-				fmt.Printf("Error running TUI: %v\n", err)
+				utils.ShowingError.Printf("Error running TUI: %v\n", err)
 				os.Exit(1)
 			}
 
-			if currentModel, ok := m.(addmodel.Model); ok && currentModel.Value() != "" {
-				fmt.Println("Current Model Value:", currentModel.Value())
-				BoltStruct.Notes[len(BoltStruct.Notes) - 1].Content = currentModel.Value()
+			if currentModel, ok := m.(view.Model); ok && currentModel.Value() != "" {
+				utils.ShowingInfo.Println("Current Model Value:", currentModel.Value())
+				BoltStruct.Notes[len(BoltStruct.Notes)-1].Content = currentModel.Value()
 			}
 
-
 		}
-		utils.AddCommand(title, BoltStruct)
+		service.AddCommand(title, BoltStruct)
 	},
 }
 
