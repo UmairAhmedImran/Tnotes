@@ -100,6 +100,7 @@ func CallInit() error {
 
 	} else {
 		utils.ShowingWarning.Println("Notes Directory already exists.")
+    os.Exit(1)
 	}
 
 	CreateDbFile()
