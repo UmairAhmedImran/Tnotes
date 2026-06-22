@@ -1,6 +1,5 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -16,7 +15,7 @@ var editCmd = &cobra.Command{
 	Short: "edit the notes",
 	Long: `edit the notes based on the name that has been specified
 if no notes of that is found then error is shown`,
-  Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("edit called")
 	},
 }

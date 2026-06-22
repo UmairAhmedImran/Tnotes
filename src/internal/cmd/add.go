@@ -4,12 +4,12 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"UmairAhmedImran/internal/utils"
-	"UmairAhmedImran/internal/tui/addmodel"
+	"tnotes/internal/tui/addmodel"
+	"tnotes/internal/utils"
 
+	"fmt"
+	"os"
 	"time"
-    "fmt"
-    "os"
 
 	tea "github.com/charmbracelet/bubbletea"
 
@@ -48,11 +48,11 @@ you can add notes in the current project/directory or you can add golbally`,
 		titleProvided := false
 		contentProvided := false
 
-    	titleFlag := cmd.Flags().Lookup("title")
+		titleFlag := cmd.Flags().Lookup("title")
 
 		if titleFlag != nil && titleFlag.Changed {
 			titleProvided = true
-    	}
+		}
 
 		contentFlag := cmd.Flags().Lookup("content")
 
@@ -73,9 +73,8 @@ you can add notes in the current project/directory or you can add golbally`,
 
 			if currentModel, ok := m.(addmodel.Model); ok && currentModel.Value() != "" {
 				fmt.Println("Current Model Value:", currentModel.Value())
-				BoltStruct.Notes[len(BoltStruct.Notes) - 1].Content = currentModel.Value()
+				BoltStruct.Notes[len(BoltStruct.Notes)-1].Content = currentModel.Value()
 			}
-
 
 		}
 		utils.AddCommand(title, BoltStruct)

@@ -5,7 +5,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-  "UmairAhmedImran/internal/utils"
+	"tnotes/internal/utils"
 )
 
 // initCmd represents the init command
@@ -15,11 +15,9 @@ var initCmd = &cobra.Command{
 	Long: `init is used to initialize the notes in the project or it
 can be initialized globally.`,
 	Run: func(cmd *cobra.Command, args []string) {
-    utils.CallInit() 
-  },
+		utils.CallInit()
+	},
 }
-
-
 
 func init() {
 	rootCmd.AddCommand(initCmd)
