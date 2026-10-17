@@ -6,8 +6,8 @@ package cmd
 import (
 	"fmt"
 
-	"UmairAhmedImran/internal/tui"
 	"UmairAhmedImran/internal/service"
+	"UmairAhmedImran/internal/tui"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"

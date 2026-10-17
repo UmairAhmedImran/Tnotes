@@ -1,9 +1,9 @@
 package service
 
 import (
+	"UmairAhmedImran/internal/db"
 	"UmairAhmedImran/internal/model"
 	"UmairAhmedImran/internal/utils"
-	"UmairAhmedImran/internal/db"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -100,7 +100,7 @@ func CallInit() error {
 
 	} else {
 		utils.ShowingWarning.Println("Notes Directory already exists.")
-    os.Exit(1)
+		os.Exit(1)
 	}
 
 	CreateDbFile()
