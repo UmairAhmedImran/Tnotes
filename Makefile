@@ -1,4 +1,5 @@
-
+# Don't ask me what is going in this Makefile
+include .env
 MIGRATION_PATH = ./cmd/migrate/migrations
 
 .PHONY:fmt vet build
