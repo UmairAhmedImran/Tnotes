@@ -16,7 +16,7 @@ var searchCmd = &cobra.Command{
 	Short: "search for specific notes",
 	Long: `Search for specific notes in the project/directory or search
 for specific notes globally.`,
-  Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("search called")
 	},
 }

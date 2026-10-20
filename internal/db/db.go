@@ -1,10 +1,14 @@
 package db
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"sync"
+	"time"
 
 	bolt "github.com/boltdb/bolt"
+	_ "github.com/glebarez/go-sqlite"
 )
 
 var (
@@ -12,6 +16,38 @@ var (
 	instance *bolt.DB
 	once     sync.Once
 )
+
+type DB struct {
+	DB *sql.DB
+}
+
+const maxOpenDbConn = 1
+const maxIdleDbConn = 1
+const maxDbLifetime = 1 * time.Hour
+
+func ConnectSql(dsn string) (*DB, error) {
+	d, err := sql.Open("sqlite", dsn)
+	if err != nil {
+		fmt.Println("Error opening the database connection", err)
+		return nil, err
+	}
+	d.SetMaxOpenConns(maxOpenDbConn)
+	d.SetMaxIdleConns(maxIdleDbConn)
+	d.SetConnMaxLifetime(maxDbLifetime)
+
+	err = testDb(d)
+	return &DB{DB: d}, nil
+}
+
+func testDb(d *sql.DB) error {
+	err := d.Ping()
+	if err != nil {
+		fmt.Println("Error", err)
+		return err
+	}
+	fmt.Println("*** Pinged database successfully! ***")
+	return nil
+}
 
 // Open initializes and returns the global DB connection.
 func Open() *bolt.DB {
