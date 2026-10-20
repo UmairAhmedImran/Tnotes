@@ -45,7 +45,6 @@ func testDb(d *sql.DB) error {
 		fmt.Println("Error", err)
 		return err
 	}
-	fmt.Println("*** Pinged database successfully! ***")
 	return nil
 }
 

@@ -11,7 +11,7 @@ type Screen int
 
 const gap = "\n\n"
 
-var content = gap + "     Welcome to Tnotes" + gap
+var content = gap + "     Welcome to Tnotes, Press esc key to exit" + gap
 
 const (
 	ScreenMain Screen = iota
