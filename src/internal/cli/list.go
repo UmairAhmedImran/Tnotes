@@ -1,10 +1,10 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package cli
 
 import (
-	"UmairAhmedImran/internal/service"
+	"tnotes/internal/service"
 
 	"github.com/spf13/cobra"
 )

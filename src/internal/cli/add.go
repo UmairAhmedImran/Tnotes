@@ -1,13 +1,13 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package cli
 
 import (
-	"UmairAhmedImran/internal/model"
-	"UmairAhmedImran/internal/service"
-	"UmairAhmedImran/internal/utils"
-	"UmairAhmedImran/internal/view"
+	"tnotes/internal/model"
+	"tnotes/internal/service"
+	"tnotes/internal/utils"
+	"tnotes/internal/view"
 
 	"os"
 	"time"

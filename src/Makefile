@@ -1,6 +1,6 @@
 # Don't ask me what is going in this Makefile
 include .env
-MIGRATION_PATH = ./cmd/migrate/migrations
+MIGRATION_PATH = ./migrations
 
 .PHONY:fmt vet build
 fmt:
@@ -12,19 +12,24 @@ vet:	fmt
 test:	fmt
 	@go test -v ./...
 
-build:	test
+build:
 	@mkdir -p bin
 	if [ -f "bin/${BINARY}" ]; then \
 		rm bin/${BINARY}; \
 		echo "Deleted old binary"; \
 	fi
 	@echo "Building binary..."
-	go build -o bin/${BINARY} cmd/main.go
+	go build -o bin/${BINARY} main.go
 
 run: build
 	@echo "Starting API..."
 	@bin/${BINARY}
 
+deps:
+	go mod download
+
+tidy:
+	go mod tidy
 
 create_migrations:
 	sqlx migrate add -r $(filter-out $@,$(MAKECMDGOALS))

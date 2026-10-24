@@ -7,25 +7,28 @@ import (
 	"log"
 	"os"
 
-	"UmairAhmedImran/cmd"
-	"UmairAhmedImran/internal/db"
-	"UmairAhmedImran/internal/service"
+	"tnotes/internal/cli"
+	"tnotes/internal/db"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	godotenv.Load()
-	if _, err := os.Stat(service.NotesDir); !(os.IsNotExist(err)) {
-		db.Open()
-		defer db.Close()
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Could not load .env: %v", err)
 	}
 
 	dsn := os.Getenv("DSN")
-	dbConn, err := db.ConnectSql(dsn)
+	wd, _ := os.Getwd()
+
+	log.Printf("Working directory: %s", wd)
+	log.Printf("DSN: %q", dsn)
+
+	dbInstance, err := db.Sqlite.Open(dsn)
 	if err != nil {
-		log.Fatal("Error Initializing Sqlite Db")
+		log.Fatalf("Error initializing SQLite DB: %v", err)
 	}
-	defer dbConn.DB.Close()
-	cmd.Execute()
+	defer dbInstance.Close()
+
+	cli.Execute()
 }

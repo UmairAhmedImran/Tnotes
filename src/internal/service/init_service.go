@@ -1,16 +1,8 @@
 package service
 
 import (
-	"UmairAhmedImran/internal/db"
-	"UmairAhmedImran/internal/model"
-	"UmairAhmedImran/internal/utils"
-	"encoding/json"
-	"fmt"
-	"log"
-	"os"
 	"time"
-
-	"github.com/boltdb/bolt"
+	"tnotes/internal/model"
 )
 
 var (
@@ -40,72 +32,72 @@ var (
 	}
 )
 
-func CreateConfigFile() error {
-	conFile, err := os.Create(ConfigFile)
-	if err != nil {
-		log.Fatalf("Error creating the config file")
-	}
-	defer conFile.Close()
+// func CreateConfigFile() error {
+// 	conFile, err := os.Create(ConfigFile)
+// 	if err != nil {
+// 		log.Fatalf("Error creating the config file")
+// 	}
+// 	defer conFile.Close()
 
-	encoder := json.NewEncoder(conFile)
-	err = encoder.Encode(basicConfData)
+// 	encoder := json.NewEncoder(conFile)
+// 	err = encoder.Encode(basicConfData)
 
-	if err != nil {
-		utils.ShowingWarning.Printf("Error encoding JSON: %v\n", err)
-		os.Exit(1)
-	}
+// 	if err != nil {
+// 		utils.ShowingWarning.Printf("Error encoding JSON: %v\n", err)
+// 		os.Exit(1)
+// 	}
 
-	utils.ShowingSuccess.Println("Created config file")
-	return nil
-}
+// 	utils.ShowingSuccess.Println("Created config file")
+// 	return nil
+// }
 
-func CreateDbFile() (*bolt.DB, error) {
-	// create the db file
-	filePermission := 0600
-	db, err := bolt.Open(db.DbFile, os.FileMode(filePermission), nil)
+// func CreateDbFile() (*bolt.DB, error) {
+// 	// // create the db file
+// 	// filePermission := 0600
+// 	// db, err := bolt.Open(db.DbFile, os.FileMode(filePermission), nil)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+// 	// if err != nil {
+// 	// 	log.Fatal(err)
+// 	// }
+// 	// defer db.Close()
 
-	utils.ShowingSuccess.Println("Created Database File")
+// 	// utils.ShowingSuccess.Println("Created Database File")
 
-	// creating a read write transactions
+// 	// // creating a read write transactions
 
-	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte(BucketName))
-		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
-		}
-		return nil
-	})
+// 	// db.Update(func(tx *bolt.Tx) error {
+// 	// 	_, err := tx.CreateBucketIfNotExists([]byte(BucketName))
+// 	// 	if err != nil {
+// 	// 		return fmt.Errorf("create bucket: %s", err)
+// 	// 	}
+// 	// 	return nil
+// 	// })
 
-	utils.ShowingSuccess.Println("DB Bucket created successfully")
+// 	// utils.ShowingSuccess.Println("DB Bucket created successfully")
 
-	return db, nil
-}
+// 	// return db, nil
+// }
 
-func CallInit() error {
-	_, err := os.Getwd()
+// func CallInit() error {
+// 	// _, err := os.Getwd()
 
-	if err != nil {
-		log.Fatal("Error getting current directory")
-	}
+// 	// if err != nil {
+// 	// 	log.Fatal("Error getting current directory")
+// 	// }
 
-	if _, err := os.Stat(NotesDir); os.IsNotExist(err) {
-		os.Mkdir(NotesDir, os.ModePerm)
+// 	// if _, err := os.Stat(NotesDir); os.IsNotExist(err) {
+// 	// 	os.Mkdir(NotesDir, os.ModePerm)
 
-		CreateConfigFile()
+// 	// 	CreateConfigFile()
 
-	} else {
-		utils.ShowingWarning.Println("Notes Directory already exists.")
-		os.Exit(1)
-	}
+// 	// } else {
+// 	// 	utils.ShowingWarning.Println("Notes Directory already exists.")
+// 	// 	os.Exit(1)
+// 	// }
 
-	CreateDbFile()
+// 	// CreateDbFile()
 
-	utils.ShowingSuccess.Println("Tnotes Initialization Complete")
+// 	// utils.ShowingSuccess.Println("Tnotes Initialization Complete")
 
-	return nil
-}
+// 	return nil
+// }

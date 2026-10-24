@@ -1,7 +1,7 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package cli
 
 import (
 	"os"
@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Use:   "Tnotes",
 	Short: "A fast terminal notes and knowledge keeping tool",
 	Long: `Tnotes stand for Terminal notes is a full fledged CLI utility
-whose main purpose is to divide the notes and TODO in a meaning full 
+whose main purpose is to divide the notes and TODO in a meaning full
 way for users to get Knowledge from it.
 Tnotes allow you to add, edit, delete, list, and search all the notes.
 One another thing is to divide the notes through settings.`,

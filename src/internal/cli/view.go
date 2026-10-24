@@ -1,13 +1,13 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package cli
 
 import (
 	"fmt"
 
-	"UmairAhmedImran/internal/service"
-	"UmairAhmedImran/internal/tui"
+	"tnotes/internal/service"
+	"tnotes/internal/tui"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"

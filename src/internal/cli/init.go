@@ -1,10 +1,10 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-package cmd
+package cli
 
 import (
-	"UmairAhmedImran/internal/service"
+	// "tnotes/internal/service"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +16,7 @@ var initCmd = &cobra.Command{
 	Long: `init is used to initialize the notes in the project or it
 can be initialized globally.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.CallInit()
+		// service.CallInit()
 	},
 }
 
