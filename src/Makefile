@@ -38,6 +38,6 @@ create_migrations:
 %:
 	@:
 migrate-up:
-	sqlx migrate run --database-url "${DB_URL}"
+	sqlx migrate run --database-url ${DB_URL}
 migrate-down:
-	sqlx migrate revert --database-url "${DB_URL}"
+	sqlx migrate revert --database-url ${DB_URL}
