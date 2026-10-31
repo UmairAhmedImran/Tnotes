@@ -2,6 +2,10 @@
 
 Tnotes is a terminal-based note-taking tool designed for managing project-related and personal notes during development. It functions similar to a todo list but with enhanced note-taking capabilities.
 
+## Core Developer
+
+- Umair Ahmed Imran
+
 ## Installation Guide
 
 ### Prerequisites
@@ -60,4 +64,3 @@ List notes with content summary:
 ```bash
 go run main.go list -r y
 ```
-

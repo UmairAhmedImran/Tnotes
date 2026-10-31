@@ -32,10 +32,12 @@ func (db *SqliteDB) testConn() error {
 
 }
 
-func (db *SqliteDB) Open(dsn string) (*sql.DB, error) {
+func (db *SqliteDB) Open() (*sql.DB, error) {
 	var err error
 
 	db.lock.Do(func() {
+
+		var dsn = db.config.Path + "?_journal_mode=WAL&_busy_timeout=5000&_pragma=foreign_keys(1)"
 
 		db.instance, err = sql.Open("sqlite", dsn)
 

@@ -5,6 +5,7 @@ package cli
 
 import (
 	// "tnotes/internal/service"
+	"tnotes/internal/setup"
 
 	"github.com/spf13/cobra"
 )
@@ -16,6 +17,7 @@ var initCmd = &cobra.Command{
 	Long: `init is used to initialize the notes in the project or it
 can be initialized globally.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		setup.SetupWorkflow()
 		// service.CallInit()
 	},
 }

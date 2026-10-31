@@ -1,4 +1,5 @@
--- Add up migration script here
+-- +goose Up
+-- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS notes (
     note_id TEXT PRIMARY KEY NOT NULL,
     title TEXT NOT NULL,
@@ -10,7 +11,7 @@ CREATE TABLE IF NOT EXISTS notes (
         CHECK (is_deleted IN (0, 1)),
     sort_order INTEGER DEFAULT 0,
     source TEXT,
-    additional_info TEXT DEFAULT "{}",
+    additional_info TEXT DEFAULT '{}',
     added_by_id TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -38,3 +39,11 @@ CREATE TABLE IF NOT EXISTS notes_tags (
     FOREIGN KEY (note_id) REFERENCES notes(note_id),
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
 );
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+DROP TABLE IF EXISTS notes_tags;
+DROP TABLE IF EXISTS notes_versions;
+DROP TABLE IF EXISTS notes;
+-- +goose StatementEnd

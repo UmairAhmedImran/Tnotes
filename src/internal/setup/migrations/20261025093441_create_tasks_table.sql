@@ -1,4 +1,5 @@
--- Add up migration script here
+-- +goose Up
+-- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS tasks (
     task_id TEXT PRIMARY KEY NOT NULL,
     title TEXT NOT NULL,
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS tasks (
         CHECK (is_deleted IN (0, 1)),
     sort_order INTEGER DEFAULT 0,
     source TEXT,
-    additional_info TEXT DEFAULT "{}",
+    additional_info TEXT DEFAULT '{}',
     added_by_id TEXT NOT NULL,
     recurring_task_id TEXT,
     recurring_period TEXT,
@@ -44,3 +45,11 @@ CREATE TABLE IF NOT EXISTS tasks_tags (
     FOREIGN KEY (task_id) REFERENCES tasks(task_id),
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
 );
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+DROP TABLE IF EXISTS tasks_tags;
+DROP TABLE IF EXISTS tasks_versions;
+DROP TABLE IF EXISTS tasks;
+-- +goose StatementEnd
