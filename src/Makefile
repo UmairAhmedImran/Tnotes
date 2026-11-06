@@ -38,6 +38,6 @@ create_migrations:
 %:
 	@:
 migrate-up:
-	sqlx migrate run --database-url ${DB_URL}
+	goose -dir $(MIGRATION_DIR) sqlite3 my_database.db up
 migrate-down:
-	sqlx migrate revert --database-url ${DB_URL}
+	goose -dir $(MIGRATION_DIR) sqlite3 my_database.db down

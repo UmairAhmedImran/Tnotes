@@ -8,7 +8,7 @@ import (
 	"github.com/pressly/goose/v3"
 )
 
-//go:embed migrations/*.up.sql
+//go:embed migrations/*.sql
 var embedMigrations embed.FS
 
 func SetupWorkflow() {
