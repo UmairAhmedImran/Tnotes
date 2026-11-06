@@ -9,10 +9,8 @@ import (
 
 	"tnotes/internal/cli"
 	// "tnotes/internal/db"
-
 	// "github.com/joho/godotenv"
 )
-
 
 func main() {
 	// if err := godotenv.Load(); err != nil {

@@ -11,7 +11,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/glebarez/go-sqlite v1.23.0
 	github.com/google/uuid v1.6.0
-	github.com/joho/godotenv v1.5.1
+	github.com/pressly/goose/v3 v3.29.0
 	github.com/spf13/cobra v1.9.1
 )
 
@@ -41,7 +41,6 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/ncruces/go-strftime v1.1.0 // indirect
-	github.com/pressly/goose/v3 v3.29.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sethvargo/go-retry v0.5.0 // indirect
