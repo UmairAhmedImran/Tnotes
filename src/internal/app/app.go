@@ -13,7 +13,22 @@ type App struct {
 	db    *sql.DB
 }
 
-func New() (*App, error) {
+var app *App
+
+func GetApp() (*App, error) {
+	if app != nil {
+		return app, nil
+	}
+
+	var err error
+
+	app = &App{}
+	app, err = app.New()
+
+	return app, err
+}
+
+func (a *App) New() (*App, error) {
 	db, err := db.Sqlite.Open()
 
 	if err != nil {

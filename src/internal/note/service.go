@@ -3,6 +3,7 @@ package note
 import (
 	"context"
 	"database/sql"
+	"log/slog"
 	"tnotes/internal/db/models"
 	"tnotes/internal/users"
 )
@@ -26,6 +27,8 @@ func (s *Service) AddNote(ctx context.Context, createInput CreateNote) error {
 	}
 
 	s.repo.Insert(ctx, createInput, user.ID)
+
+	slog.Info("[NOTE][REPOSITORY] Note is added successfully")
 
 	return nil
 }

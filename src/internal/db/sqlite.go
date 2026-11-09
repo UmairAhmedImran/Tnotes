@@ -23,11 +23,11 @@ func (db *SqliteDB) testConn() error {
 	err := db.instance.Ping()
 
 	if err != nil {
-		slog.Error("Error Pinging the database: ", "error", err)
+		slog.Error("[DB][SQLITE] Error Pinging the database: ", "error", err)
 		return err
 	}
 
-	slog.Info(" Pinged database successfully ")
+	slog.Info("[DB][SQLITE] Pinged database successfully ")
 	return nil
 
 }
@@ -42,7 +42,7 @@ func (db *SqliteDB) Open() (*sql.DB, error) {
 		db.instance, err = sql.Open("sqlite", dsn)
 
 		if err != nil {
-			slog.Error("Error opening the database connection",
+			slog.Error("[DB][SQLITE] Error opening the database connection",
 				"error", err,
 			)
 			return
@@ -64,7 +64,7 @@ func (db *SqliteDB) Open() (*sql.DB, error) {
 
 func (db *SqliteDB) Get() *sql.DB {
 	if db.instance == nil {
-		slog.Error("SqliteDB is not initialized")
+		slog.Error("[DB][SQLITE] SqliteDB is not initialized")
 	}
 	return db.instance
 }

@@ -4,18 +4,14 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cli
 
 import (
-	"tnotes/internal/model"
-	"tnotes/internal/service"
+	"log/slog"
+	"tnotes/internal/app"
+	"tnotes/internal/note"
+
+	// "tnotes/internal/service"
 	"tnotes/internal/setup"
-	"tnotes/internal/utils"
-	"tnotes/internal/view"
+	// "tnotes/internal/utils"
 
-	"os"
-	"time"
-
-	tea "github.com/charmbracelet/bubbletea"
-
-	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -23,18 +19,18 @@ var (
 	title   string
 	content string
 
-	notes model.NotesStruct = model.NotesStruct{
-		Id:        uuid.NewString(),
-		CreatedAt: time.Now(),
-		Content:   content,
-		Format:    "markdown",
-	}
+	// notes model.NotesStruct = model.NotesStruct{
+	// 	Id:        uuid.NewString(),
+	// 	CreatedAt: time.Now(),
+	// 	Content:   content,
+	// 	Format:    "markdown",
+	// }
 
-	BoltStruct model.BoltDbStruct = model.BoltDbStruct{
-		Title:     title,
-		CreatedAt: time.Now(),
-		Notes:     []model.NotesStruct{notes},
-	}
+	// BoltStruct model.BoltDbStruct = model.BoltDbStruct{
+	// 	Title:     title,
+	// 	CreatedAt: time.Now(),
+	// 	Notes:     []model.NotesStruct{notes},
+	// }
 )
 
 // addCmd represents the add command
@@ -44,7 +40,15 @@ var addCmd = &cobra.Command{
 	Long: `Add new notes according to your need such as
 you can add notes in the current project/directory or you can add golbally`,
 	Run: func(cmd *cobra.Command, args []string) {
+		slog.Debug("[NOTE][CLI]: Function called")
 		setup.SetupWorkflow()
+
+		app, err := app.GetApp()
+
+		if err != nil {
+			slog.Error("Got some errr", "error", err)
+			return
+		}
 
 		titleProvided := false
 		contentProvided := false
@@ -58,27 +62,43 @@ you can add notes in the current project/directory or you can add golbally`,
 		contentFlag := cmd.Flags().Lookup("content")
 
 		if contentFlag != nil && contentFlag.Changed {
-			utils.ShowingInfo.Println("Content is provided by user")
+			slog.Debug("Content is provided by user")
+			// utils.ShowingInfo.Println("Content is provided by user")
 			contentProvided = true
 		}
 
-		if titleProvided && !contentProvided {
-			currentModel := view.New()
-			p := tea.NewProgram(currentModel)
-			m, err := p.Run()
+
+		slog.Debug("[NOTE][CLI]: ", "title", title)
+		slog.Debug("[NOTE][CLI]: ", "content", content)
+		slog.Debug("[NOTE][CLI]: ", "titleFlag", titleFlag)
+		slog.Debug("[NOTE][CLI]: ", "contentFlag", contentFlag)
+
+		if titleProvided && contentProvided {
+			slog.Debug("Condition passess")
+			err := app.Notes.AddNote(cmd.Context() , note.CreateNote{ Title: title, Content: content})
 
 			if err != nil {
-				utils.ShowingError.Printf("Error running TUI: %v\n", err)
-				os.Exit(1)
+				slog.Error("[NOTE][CLI]: ", "error", err)
 			}
-
-			if currentModel, ok := m.(view.Model); ok && currentModel.Value() != "" {
-				utils.ShowingInfo.Println("Current Model Value:", currentModel.Value())
-				BoltStruct.Notes[len(BoltStruct.Notes)-1].Content = currentModel.Value()
-			}
-
 		}
-		service.AddCommand(title, BoltStruct)
+
+		// if titleProvided && !contentProvided {
+		// 	currentModel := view.New()
+		// 	p := tea.NewProgram(currentModel)
+		// 	m, err := p.Run()
+
+		// 	if err != nil {
+		// 		utils.ShowingError.Printf("Error running TUI: %v\n", err)
+		// 		os.Exit(1)
+		// 	}
+
+		// 	if currentModel, ok := m.(view.Model); ok && currentModel.Value() != "" {
+		// 		utils.ShowingInfo.Println("Current Model Value:", currentModel.Value())
+		// 		BoltStruct.Notes[len(BoltStruct.Notes)-1].Content = currentModel.Value()
+		// 	}
+
+		// }
+		// service.AddCommand(title, BoltStruct)
 	},
 }
 
@@ -90,7 +110,7 @@ func init() {
 		&title, "title", "t", "", "Note title",
 	)
 	addCmd.Flags().StringVarP(
-		&BoltStruct.Notes[len(BoltStruct.Notes)-1].Content,
+		&content,
 		"content", "c", "", "Note content",
 	)
 	// Here you will define your flags and configuration settings.

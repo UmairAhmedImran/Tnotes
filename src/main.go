@@ -6,13 +6,14 @@ package main
 import (
 	// "log"
 	// "os"
-
+	"log/slog"
 	"tnotes/internal/cli"
 	// "tnotes/internal/db"
 	// "github.com/joho/godotenv"
 )
 
 func main() {
+	slog.SetLogLoggerLevel(slog.LevelDebug)
 	// if err := godotenv.Load(); err != nil {
 	// 	log.Printf("Could not load .env: %v", err)
 	// }

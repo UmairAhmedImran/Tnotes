@@ -16,12 +16,12 @@ func SetupWorkflow() {
 	var db, err = db.Sqlite.Open()
 
 	if err != nil {
-		slog.Debug("Nothing to do since database does not work correctly")
+		slog.Debug("[SETUP] Nothing to do since database does not work correctly")
 		return
 	}
 
 	if err := goose.SetDialect("sqlite3"); err != nil {
-		slog.Error("failed to set dialect: ", "error", err)
+		slog.Error("[SETUP] failed to set dialect: ", "error", err)
 		return
 	}
 
@@ -30,9 +30,9 @@ func SetupWorkflow() {
 	err = goose.Up(db, "migrations")
 
 	if err != nil {
-		slog.Error("Migration could not be applied: ", "error", err)
+		slog.Error("[SETUP] Migration could not be applied: ", "error", err)
 		return
 	}
 
-	slog.Info("Migration applied successful")
+	slog.Info("[SETUP] Migration applied successful")
 }

@@ -3,6 +3,7 @@ package users
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log/slog"
 	"tnotes/internal/db/models"
 )
@@ -18,18 +19,24 @@ func NewRepository(db *sql.DB) *Repository {
 }
 
 func (r *Repository) RetrieveUser(ctx context.Context, username models.Username) (models.Users, error) {
-	query := `
-		SELECT ? FROM users
-		WHERE username = ?
-	`
+	slog.Debug("[USER][REPOSITORY]: ", "username", username)
+
+	query := `SELECT ` + userCols + ` FROM users WHERE username = ?`
+
+	slog.Debug("[USER][REPOSITORY]: retrieve user", "query", query, "arg", username)
 
 	var user models.Users
 
-	row := r.db.QueryRowContext(ctx, query, userCols, username)
+	row := r.db.QueryRowContext(ctx, query, username)
 
 	err := row.Scan(
 		&user.ID, &user.Username, &user.SyncedAt, &user.CreatedAt,
 	)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		slog.Error("[USER][REPOSITORY]: not found", "error", err)
+		return user, sql.ErrNoRows
+	}
 
 	if err != nil {
 		slog.Error("Error scanning the user table ", "error", err )
