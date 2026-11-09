@@ -6,6 +6,7 @@ package cli
 import (
 	"tnotes/internal/model"
 	"tnotes/internal/service"
+	"tnotes/internal/setup"
 	"tnotes/internal/utils"
 	"tnotes/internal/view"
 
@@ -43,7 +44,7 @@ var addCmd = &cobra.Command{
 	Long: `Add new notes according to your need such as
 you can add notes in the current project/directory or you can add golbally`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.CheckInit()
+		setup.SetupWorkflow()
 
 		titleProvided := false
 		contentProvided := false
