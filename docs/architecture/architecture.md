@@ -23,13 +23,36 @@ tnotes/
 │ │ │ └── app.go # Composition root: config → db → services → workflow
 │ │ │
 │ │ ├── cli/ # Cobra layer (thin: parse, call, print)
-│ │ │ ├── root.go
-│ │ │ ├── note.go
-│ │ │ ├── task.go
-│ │ │ ├── tag.go
-│ │ │ ├── search.go
-│ │ │ ├── sync.go
-│ │ │ ├── tui.go
+│ │ │ ├── root.go # rootCmd, Execute(), registers every command group
+│ │ │ ├── init.go # `tnotes init` (never builds the app)
+│ │ │ ├── search.go # `tnotes search` (single command, no group needed)
+│ │ │ ├── tui.go # `tnotes tui`
+│ │ │ │
+│ │ │ ├── notes/ # `tnotes add|list|edit|rm` (registered at top level)
+│ │ │ │ ├── notes.go # exports Commands() []\*cobra.Command
+│ │ │ │ ├── add.go
+│ │ │ │ ├── list.go
+│ │ │ │ ├── edit.go
+│ │ │ │ └── delete.go
+│ │ │ │
+│ │ │ ├── tasks/ # `tnotes task add|list|done|rm`
+│ │ │ │ ├── tasks.go # exports Cmd(), the "task" group
+│ │ │ │ ├── add.go
+│ │ │ │ ├── list.go
+│ │ │ │ ├── done.go
+│ │ │ │ └── delete.go
+│ │ │ │
+│ │ │ ├── tags/ # `tnotes tag add|list|rm`
+│ │ │ │ ├── tags.go # exports Cmd()
+│ │ │ │ ├── add.go
+│ │ │ │ ├── list.go
+│ │ │ │ └── delete.go
+│ │ │ │
+│ │ │ ├── syncing/ # `tnotes sync push|pull|status` (named to avoid clashing with stdlib sync)
+│ │ │ │ ├── syncing.go # exports Cmd()
+│ │ │ │ ├── push.go
+│ │ │ │ ├── pull.go
+│ │ │ │ └── status.go
 │ │ │ └── output.go
 │ │ │
 │ │ ├── config/
