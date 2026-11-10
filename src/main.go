@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	slog.SetLogLoggerLevel(slog.LevelDebug)
+	slog.SetLogLoggerLevel(slog.LevelInfo)
 	// if err := godotenv.Load(); err != nil {
 	// 	log.Printf("Could not load .env: %v", err)
 	// }

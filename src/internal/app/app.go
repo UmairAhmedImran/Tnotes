@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"tnotes/internal/db"
 	"tnotes/internal/note"
+	"tnotes/internal/setup"
 	"tnotes/internal/users"
 )
 
@@ -24,6 +25,7 @@ func GetApp() (*App, error) {
 
 	app = &App{}
 	app, err = app.New()
+	setup.SetupWorkflow()
 
 	return app, err
 }

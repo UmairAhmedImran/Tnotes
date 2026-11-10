@@ -1,15 +1,16 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-package cli
+package note
 
 import (
-	"tnotes/internal/service"
+	"log/slog"
+	"tnotes/internal/app"
 
 	"github.com/spf13/cobra"
 )
 
-var recursively bool
+var detailed bool
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
@@ -18,17 +19,23 @@ var listCmd = &cobra.Command{
 	Long: `List the notes in the current project/directory or list all the
 the notes globally (if specified)`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.CheckInit()
+		// service.CheckInit()
 
-		service.ListCommand(recursively)
+		app, err := app.GetApp()
+
+		if err != nil {
+			slog.Error("[NOTE][CLI] could not get app: ", "error", err)
+			return
+		}
+
+		app.Notes.ListNote(cmd.Context(), detailed)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
 
 	listCmd.Flags().BoolVarP(
-		&recursively, "recursively", "r", false, "To print the content inside the title or not.",
+		&detailed, "detailed", "d", false, "To print the content inside the title or not.",
 	)
 
 	// Here you will define your flags and configuration settings.

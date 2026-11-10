@@ -1,7 +1,7 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-package cli
+package note
 
 import (
 	"log/slog"
@@ -9,7 +9,6 @@ import (
 	"tnotes/internal/note"
 
 	// "tnotes/internal/service"
-	"tnotes/internal/setup"
 	// "tnotes/internal/utils"
 
 	"github.com/spf13/cobra"
@@ -18,19 +17,6 @@ import (
 var (
 	title   string
 	content string
-
-	// notes model.NotesStruct = model.NotesStruct{
-	// 	Id:        uuid.NewString(),
-	// 	CreatedAt: time.Now(),
-	// 	Content:   content,
-	// 	Format:    "markdown",
-	// }
-
-	// BoltStruct model.BoltDbStruct = model.BoltDbStruct{
-	// 	Title:     title,
-	// 	CreatedAt: time.Now(),
-	// 	Notes:     []model.NotesStruct{notes},
-	// }
 )
 
 // addCmd represents the add command
@@ -41,12 +27,11 @@ var addCmd = &cobra.Command{
 you can add notes in the current project/directory or you can add golbally`,
 	Run: func(cmd *cobra.Command, args []string) {
 		slog.Debug("[NOTE][CLI]: Function called")
-		setup.SetupWorkflow()
 
 		app, err := app.GetApp()
 
 		if err != nil {
-			slog.Error("Got some errr", "error", err)
+			slog.Error("[NOTE][CLI]: Got some errr", "error", err)
 			return
 		}
 
@@ -62,11 +47,10 @@ you can add notes in the current project/directory or you can add golbally`,
 		contentFlag := cmd.Flags().Lookup("content")
 
 		if contentFlag != nil && contentFlag.Changed {
-			slog.Debug("Content is provided by user")
+			slog.Debug("[NOTE][CLI]: Content is provided by user")
 			// utils.ShowingInfo.Println("Content is provided by user")
 			contentProvided = true
 		}
-
 
 		slog.Debug("[NOTE][CLI]: ", "title", title)
 		slog.Debug("[NOTE][CLI]: ", "content", content)
@@ -75,36 +59,16 @@ you can add notes in the current project/directory or you can add golbally`,
 
 		if titleProvided && contentProvided {
 			slog.Debug("Condition passess")
-			err := app.Notes.AddNote(cmd.Context() , note.CreateNote{ Title: title, Content: content})
+			err := app.Notes.AddNote(cmd.Context(), note.CreateNote{Title: title, Content: content})
 
 			if err != nil {
 				slog.Error("[NOTE][CLI]: ", "error", err)
 			}
 		}
-
-		// if titleProvided && !contentProvided {
-		// 	currentModel := view.New()
-		// 	p := tea.NewProgram(currentModel)
-		// 	m, err := p.Run()
-
-		// 	if err != nil {
-		// 		utils.ShowingError.Printf("Error running TUI: %v\n", err)
-		// 		os.Exit(1)
-		// 	}
-
-		// 	if currentModel, ok := m.(view.Model); ok && currentModel.Value() != "" {
-		// 		utils.ShowingInfo.Println("Current Model Value:", currentModel.Value())
-		// 		BoltStruct.Notes[len(BoltStruct.Notes)-1].Content = currentModel.Value()
-		// 	}
-
-		// }
-		// service.AddCommand(title, BoltStruct)
 	},
 }
 
 func init() {
-
-	rootCmd.AddCommand(addCmd)
 
 	addCmd.Flags().StringVarP(
 		&title, "title", "t", "", "Note title",

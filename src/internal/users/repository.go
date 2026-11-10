@@ -11,7 +11,7 @@ import (
 const userCols = "user_id, username, synced_at, created_at"
 
 type Repository struct {
-	db	*sql.DB
+	db *sql.DB
 }
 
 func NewRepository(db *sql.DB) *Repository {
@@ -39,7 +39,7 @@ func (r *Repository) RetrieveUser(ctx context.Context, username models.Username)
 	}
 
 	if err != nil {
-		slog.Error("Error scanning the user table ", "error", err )
+		slog.Error("[USER][REPOSITORY]: Error scanning the user table ", "error", err)
 	}
 
 	return user, err

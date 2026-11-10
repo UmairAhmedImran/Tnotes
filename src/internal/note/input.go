@@ -1,6 +1,6 @@
 package note
 
 type CreateNote struct {
-	Title string
+	Title   string
 	Content string
 }
