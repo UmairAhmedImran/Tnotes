@@ -1,3 +1,7 @@
 .notes
 my_database.db
 .env
+
+src/bin/*
+!src/bin/.gitkeep
+
