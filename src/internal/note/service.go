@@ -40,7 +40,7 @@ func (s *Service) ListNote(ctx context.Context, detailed bool) error {
 		return err
 	}
 
-	for i := 0; i < len(notes); i++ {
+	for i := range notes {
 		log.Println()
 		log.Println("-------------------------------------------")
 		log.Printf("Title: %s", notes[i].Title)

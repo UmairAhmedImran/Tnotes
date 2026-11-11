@@ -44,12 +44,12 @@ func (r *Repository) List(ctx context.Context) ([]models.Note, error) {
 
 	rows, err := r.db.QueryContext(ctx, query)
 
-	defer rows.Close()
-
 	if err != nil {
 		slog.Error("[NOTE][REPOSITORY]: error in fetching notes list: ", "error", err)
 		return notes, err
 	}
+
+	defer rows.Close()
 
 	for rows.Next() {
 		var note models.Note
