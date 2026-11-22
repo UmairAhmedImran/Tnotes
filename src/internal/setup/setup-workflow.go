@@ -84,3 +84,24 @@ func CallInit() error {
 
 	return nil
 }
+
+func CheckInit() error {
+	if _, err := os.Stat(service.NotesDir); os.IsNotExist(err) {
+		slog.Info("[CHECK INIT] Tnotes not Initialized. Please run `tnotes init` first.")
+		os.Exit(1)
+	}
+
+	if _, err := os.Stat(service.ConfigFile); os.IsNotExist(err) {
+		slog.Info("[CHECK INIT] Config file does not exists creating basic config file")
+		// going to add two options here to re init or to create a new config?
+		CreateConfigFile()
+	}
+
+	if _, err := os.Stat(service.BasicConfData.DbFile); os.IsNotExist(err) {
+		slog.Info("[CHECK INIT] DB file does not exists creating new DB file")
+		// going to add two options here to re init or to create a new db?
+		SetupDBLayer()
+	}
+
+	return nil
+}
