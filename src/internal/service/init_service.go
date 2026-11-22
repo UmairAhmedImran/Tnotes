@@ -21,10 +21,10 @@ var (
 		SyntaxhighLight: true,
 	}
 
-	basicConfData model.BasicConfStruct = model.BasicConfStruct{
+	BasicConfData model.BasicConfStruct = model.BasicConfStruct{
 		Version:       "1.0.0",
 		CreatedAt:     time.Now(),
-		Scope:         "project",
+		Scope:         "workspace",
 		DbFile:        "notes.db",
 		DefaultBucket: "tnotes",
 		Markdown:      markdown,

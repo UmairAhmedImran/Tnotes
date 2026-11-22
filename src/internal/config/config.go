@@ -32,7 +32,7 @@ func Default() Config {
 			MaxOpenDbConn: 1,
 			MaxIdleDbConn: 1,
 			MaxDbLifetime: 1 * time.Hour,
-			Path:          "./my_database.db",
+			Path:          ".notes/my_database.db",
 		},
 	}
 }
