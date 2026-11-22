@@ -2,8 +2,11 @@ package setup
 
 import (
 	"embed"
+	"encoding/json"
 	"log/slog"
+	"os"
 	"tnotes/internal/db"
+	"tnotes/internal/service"
 
 	"github.com/pressly/goose/v3"
 )
@@ -11,7 +14,7 @@ import (
 //go:embed migrations/*.sql
 var embedMigrations embed.FS
 
-func SetupWorkflow() {
+func SetupDBLayer() {
 
 	var db, err = db.Sqlite.Open()
 
@@ -35,4 +38,70 @@ func SetupWorkflow() {
 	}
 
 	slog.Info("[SETUP] Migration applied successful")
+}
+
+func CreateConfigFile() error {
+	conFile, err := os.Create(service.ConfigFile)
+	if err != nil {
+		slog.Error("[CONFIG] Error creating the config file", "error", err)
+	}
+	defer conFile.Close()
+
+	encoder := json.NewEncoder(conFile)
+	err = encoder.Encode(service.BasicConfData)
+
+	if err != nil {
+		slog.Error("[CONFIG] Error encoding JSON: ", "error", err)
+		os.Exit(1)
+	}
+
+	slog.Info("[CONFIG] Created config file")
+	return nil
+}
+
+func CheckandCreateDirectory() {
+	if _, err := os.Stat(service.NotesDir); os.IsNotExist(err) {
+		os.Mkdir(service.NotesDir, os.ModePerm)
+
+	} else {
+		slog.Info("[DIR] Notes Directory already exists.")
+		os.Exit(1)
+	}
+}
+
+func CallInit() error {
+	_, err := os.Getwd()
+
+	if err != nil {
+		slog.Error("[INIT] Error getting current directory")
+	}
+
+	CheckandCreateDirectory()
+	CreateConfigFile()
+	SetupDBLayer()
+
+	slog.Info("[INIT] Tnotes Initialization Complete")
+
+	return nil
+}
+
+func CheckInit() error {
+	if _, err := os.Stat(service.NotesDir); os.IsNotExist(err) {
+		slog.Info("[CHECK INIT] Tnotes not Initialized. Please run `tnotes init` first.")
+		os.Exit(1)
+	}
+
+	if _, err := os.Stat(service.ConfigFile); os.IsNotExist(err) {
+		slog.Info("[CHECK INIT] Config file does not exists creating basic config file")
+		// going to add two options here to re init or to create a new config?
+		CreateConfigFile()
+	}
+
+	if _, err := os.Stat(service.BasicConfData.DbFile); os.IsNotExist(err) {
+		slog.Info("[CHECK INIT] DB file does not exists creating new DB file")
+		// going to add two options here to re init or to create a new db?
+		SetupDBLayer()
+	}
+
+	return nil
 }
